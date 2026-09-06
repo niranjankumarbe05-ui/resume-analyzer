@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ResumePro</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        }
+
+        .container {
+            width: 60%;
+            margin: 60px auto;
+            background: #e9ecef;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        /* LOGO */
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        h1 span {
+            color: #007bff;
+        }
+
+        /* UPLOAD SECTION */
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-btn {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .file-name {
+            font-size: 14px;
+        }
+
+        /* RESULT SECTIONS */
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .score {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .meter {
+            background: #d3d3d3;
+            height: 8px;
+            border-radius: 10px;
+            margin: 5px 0 15px;
+        }
+
+        .fill {
+            height: 100%;
+            background: green;
+            border-radius: 10px;
+        }
+
+        .skills { background: #cdb4db; }
+        .missing { background: #ffe5b4; }
+        .issues { background: #f8c8c8; }
+        .meter-box { background: #d8f3dc; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="logo">RP</div>
+
+    <h1>Resume<span>Pro</span></h1>
+    <p>Smart Resume Analyzer</p>
+
+    <!-- Upload -->
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+        <input type="file" id="resumeInput" name="resume" required>
+        <label for="resumeInput" class="custom-file-btn"> Choose Resume</label>
+        <p id="fileName" class="file-name">No file selected</p>
+        <button type="submit" class="analyze-btn"> Analyze Resume</button>
+    </form>
+
+    {% if result %}
+        <div class="score">Score: {{result.score}} / 100</div>
+
+        <!-- Strength Meter -->
+        <div class="card meter-box">
+            <h3>Strength Meter</h3>
+
+            Formatting
+            <div class="meter"><div class="fill" style="width: {{result.formatting}}%"></div></div>
+
+            Content
+            <div class="meter"><div class="fill" style="width: {{result.content}}%"></div></div>
+
+            Skills
+            <div class="meter"><div class="fill" style="width: {{result.skills_score}}%"></div></div>
+        </div>
+
+        <!-- Skills -->
+        <div class="card skills">
+            <h3>Skills</h3>
+            <ul>
+                {% for s in result.skills %}
+                <li>{{s}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Missing -->
+        <div class="card missing">
+            <h3>Missing</h3>
+            <ul>
+                {% for m in result.missing %}
+                <li>{{m}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Issues -->
+        <div class="card issues">
+            <h3>Issues</h3>
+            <ul>
+                {% for i in result.issues %}
+                <li>{{i}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+document.getElementById("resumeInput").addEventListener("change", function() {
+    document.getElementById("fileName").textContent =
+        this.files[0]?.name || "No file selected";
+});
+</script>
+
+</body>
+</html>
